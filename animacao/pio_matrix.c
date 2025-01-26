@@ -7,41 +7,20 @@
 #include "hardware/pio.h"
 #include "pico/bootrom.h"
 #include "pico/stdlib.h"
+#include "hardware/pwm.h"
+
+#define BUZZER_PIN 15
 
 // arquivo .pio
 #include "pio_matrix.pio.h"
-
-#define LED1 1
-#define LED2 2
-#define LED3 3
-#define LED4 4
-#define LED5 5
-#define LED6 10
-#define LED7 9
-#define LED8 8
-#define LED9 7
-#define LED10 6
-#define LED11 11
-#define LED12 12
-#define LED13 13
-#define LED14 14
-#define LED15 15
-#define LED16 20
-#define LED17 19
-#define LED18 18
-#define LED19 17
-#define LED20 16
-#define LED21 21
-#define LED22 22
-#define LED23 23
-#define LED24 24
-#define LED25 25
 
 // número de LEDs
 #define NUM_PIXELS 25
 
 // pino de saída
 #define OUT_PIN 7
+
+#define FRAMES_SIZE 22
 
 // configurações da PIO
 PIO pio = pio0;
@@ -52,80 +31,183 @@ uint offset;
 uint sm;
 
 // vetor para criar imagem na matriz de led - 1
-double desenhos[9][NUM_PIXELS] = {
-    // Frame 1: Batimento normal
-    {0.0, 0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-    
-    // Frame 2: Descanso (sem batimento)
-    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-    
-    // Frame 3: Batimento forte
-    {0.0, 0.0, 0.0, 0.3, 0.3, 0.0, 0.3, 0.3, 0.3, 0.0, 0.3, 0.0, 0.0, 0.3, 0.3, 0.0, 0.3, 0.3, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.0},
-    
-    // Frame 4: Batimento fraco
-    {0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0},
-    
-    // Frame 5: Batimento médio
-    {0.0, 0.0, 0.3, 0.3, 0.3, 0.0, 0.0, 0.3, 0.3, 0.0, 0.0, 0.3, 0.3, 0.0, 0.3, 0.0, 0.3, 0.3, 0.0, 0.3, 0.0, 0.3, 0.0, 0.0, 0.0},
-    
-    // Frame 6: Batimento com intervalo maior (menor frequência)
-    {0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 0.3, 0.0, 0.0, 0.3, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.0},
-    
-    // Frame 7: Batimento acelerado
-    {0.0, 0.0, 0.3, 0.3, 0.3, 0.3, 0.0, 0.3, 0.0, 0.3, 0.3, 0.3, 0.0, 0.3, 0.3, 0.3, 0.0, 0.3, 0.3, 0.0, 0.3, 0.3, 0.0, 0.3, 0.0},
-    
-    // Frame 8: Batimento com picos alternados
-    {0.0, 0.3, 0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0}
+double frames[FRAMES_SIZE][NUM_PIXELS] = {
 
-        {
-        // ponto
-        0.0, 0.0, 0.0, 0.0, 0.0,  //
-        0.0, 0.0, 0.0, 0.0, 0.0,  //
-        0.0, 0.0, 0.3, 0.0, 0.0,  //
-        0.0, 0.0, 0.0, 0.0, 0.0,  //
-        0.0, 0.0, 0.0, 0.0, 0.0   //
-    }
+    // Frame 1
+    {0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.3, 0.3, 0.3, 0.3, 0.3,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 2
+    {0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.3, 0.0, 0.0, 0.0, 0.0,  //
+     0.3, 0.3, 0.3, 0.3, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 3
+    {0.0, 0.0, 0.0, 0.0, 0.3,  //
+     0.0, 0.3, 0.0, 0.0, 0.0,  //
+     0.3, 0.3, 0.3, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 4
+    {0.0, 0.0, 0.0, 0.3, 0.0,  //
+     0.3, 0.0, 0.3, 0.0, 0.0,  //
+     0.3, 0.3, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 5
+    {0.0, 0.0, 0.3, 0.0, 0.0,  //
+     0.0, 0.3, 0.0, 0.3, 0.0,  //
+     0.3, 0.0, 0.0, 0.0, 0.3,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 6
+    {0.0, 0.3, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.3, 0.0, 0.3,  //
+     0.0, 0.0, 0.0, 0.3, 0.0,  //
+     0.3, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 7
+    {0.3, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.3, 0.0,  //
+     0.0, 0.0, 0.3, 0.0, 0.3,  //
+     0.0, 0.3, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 8
+    {0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.3, 0.0, 0.0, 0.0, 0.3,  //
+     0.0, 0.3, 0.0, 0.3, 0.0,  //
+     0.0, 0.0, 0.3, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 9
+    {0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.3, 0.0, 0.0,  //
+     0.0, 0.3, 0.0, 0.3, 0.3,  //
+     0.0, 0.0, 0.0, 0.0, 0.3,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 10
+    {0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.3, 0.0,  //
+     0.3, 0.0, 0.3, 0.3, 0.3,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 11
+    {0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.3,  //
+     0.0, 0.3, 0.3, 0.3, 0.3,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 12
+    {0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.3, 0.3, 0.3, 0.3, 0.3,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 13
+    {0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.3, 0.0, 0.0, 0.0, 0.0,  //
+     0.3, 0.3, 0.3, 0.3, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 14
+    {0.0, 0.0, 0.0, 0.0, 0.3,  //
+     0.0, 0.3, 0.0, 0.0, 0.0,  //
+     0.3, 0.3, 0.3, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 15
+    {0.0, 0.0, 0.0, 0.3, 0.0,  //
+     0.3, 0.0, 0.3, 0.0, 0.0,  //
+     0.3, 0.3, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 16
+    {0.0, 0.0, 0.3, 0.0, 0.0,  //
+     0.0, 0.3, 0.0, 0.3, 0.0,  //
+     0.3, 0.0, 0.0, 0.0, 0.3,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 17
+    {0.0, 0.3, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.3, 0.0, 0.3,  //
+     0.0, 0.0, 0.0, 0.3, 0.0,  //
+     0.3, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 18
+    {0.3, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.3, 0.0,  //
+     0.0, 0.0, 0.3, 0.0, 0.3,  //
+     0.0, 0.3, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 19
+    {0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.3, 0.0, 0.0, 0.0, 0.3,  //
+     0.0, 0.3, 0.0, 0.3, 0.0,  //
+     0.0, 0.0, 0.3, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 20
+    {0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.3, 0.0, 0.0,  //
+     0.0, 0.3, 0.0, 0.3, 0.3,  //
+     0.0, 0.0, 0.0, 0.0, 0.3,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 21
+    {0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.3, 0.0,  //
+     0.3, 0.0, 0.3, 0.3, 0.3,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
+    // Frame 22
+    {0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.3,  //
+     0.0, 0.3, 0.3, 0.3, 0.3,  //
+     0.0, 0.0, 0.0, 0.0, 0.0,  //
+     0.0, 0.0, 0.0, 0.0, 0.0},
+
 };
 
 // função para exibir a sequência de batimentos
-void exibe_monitor_cardiaco() {
+void cardiac_rate_matrix() {
   while (true) {
-    for (int i = 0; i < 9; i++) {  // Exibe todos os 8 frames
-      desenha_na_matriz(desenhos[i], true);
-      sleep_ms(500);  // Intervalo entre os frames
+    for (int i = 0; i < FRAMES_SIZE; i++) {  // Exibe todos os 22 frames
+      drawn_matrix(frames[i]);
+      sleep_ms(50);  // Intervalo entre os frames
     }
   }
 }
 
-
-int batimentos_frames[9][NUM_PIXELS] = {
-    // Frame 1 (Batimento forte)
-    {LED5, LED4, LED3, LED2, LED1, LED6, LED11, LED16, LED21, LED22, LED23, LED24, LED25, LED20, LED15, LED10},
-    
-    // Frame 2 (Batimento fraco)
-    {LED7, LED3, LED8, LED13, LED18, LED23, LED22, LED21, LED24, LED25},
-    
-    // Frame 3 (Batimento forte)
-    {LED1, LED2, LED3, LED4, LED5, LED10, LED15, LED14, LED13, LED12, LED11, LED16, LED21, LED22, LED23, LED24, LED25},
-    
-    // Frame 4 (Batimento fraco)
-    {LED1, LED2, LED3, LED4, LED5, LED10, LED15, LED14, LED13, LED12, LED11, LED16, LED21, LED22},
-    
-    // Frame 5 (Sem pulso)
-    {LED5, LED4, LED3, LED2, LED1, LED6, LED11, LED16, LED21, LED22, LED23},
-    
-    // Frame 6 (Batimento fraco)
-    {LED1, LED6, LED11, LED12, LED13, LED14, LED15, LED10, LED5, LED20, LED25},
-    
-    // Frame 7 (Batimento forte)
-    {LED5, LED4, LED3, LED2, LED1, LED6, LED11, LED12, LED13, LED14, LED15, LED20, LED25, LED24},
-    
-    // Frame 8 (Sem pulso)
-    {LED5, LED4, LED3, LED2, LED1, LED6, LED11, LED16, LED21, LED22},
-    
-    // Frame 9 (Batimento forte)
-    {LED5, LED4, LED3, LED2, LED1, LED6, LED11, LED12, LED13, LED14, LED15, LED10, LED20, LED25, LED24, LED23}
-};
+void bip_heart_monitor(uint slice_num, uint frequency, uint duration_ms) {
+    pwm_set_clkdiv(slice_num, 125.0f); // Configura o divisor de clock para 125
+    pwm_set_wrap(slice_num, 1000000 / frequency); // Define o período do PWM
+    pwm_set_chan_level(slice_num, PWM_CHAN_A, (1000000 / frequency) / 2); // Define o duty cycle para 50%
+    pwm_set_enabled(slice_num, true); // Habilita o PWM
+    sleep_ms(duration_ms); // Aguarda pelo tempo de duração
+    pwm_set_enabled(slice_num, false); // Desabilita o PWM
+    sleep_ms(50); // Pausa de 500 ms
+}
 
 // rotina para definição da intensidade de cores do led
 uint32_t matrix_rgb(double b, double r, double g) {
@@ -137,46 +219,17 @@ uint32_t matrix_rgb(double b, double r, double g) {
 }
 
 // rotina para acionar a matrix de leds - ws2812b
-void desenha_na_matriz(double* desenho, bool colorido) {
+void drawn_matrix(double* desenho) {
   uint32_t valor_led;
   for (int16_t i = 0; i < NUM_PIXELS; i++) {
     int index = 24 - i;
     double pixel = desenho[index];
 
-    if (colorido) {
-      if (index == 12) {
-        valor_led = matrix_rgb(pixel, r = 0.0, g = 0.0);
-      } else if ((index >= 6 && index <= 8) || index == 11 || index == 13 ||
-                 (index >= 16 && index <= 18)) {
-        valor_led = matrix_rgb(b = 0.0, r = 0.0, pixel);
-      } else {
-        valor_led = matrix_rgb(b = 0.0, pixel, g = 0.0);
-      }
-    } else {
-      valor_led = matrix_rgb(pixel, r = 0.0, g = 0.0);
-    }
+    valor_led = matrix_rgb(b = 0.0, pixel, g = 0.0);
 
     pio_sm_put_blocking(pio, sm, valor_led);
   }
 }
-
-// Função para desenhar os batimentos na matriz de LEDs
-void desenha_batimento(int frame) {
-    // A função 'desenha_na_matriz' pode ser implementada de acordo com a necessidade
-    // Para simular os batimentos com os frames definidos
-    desenha_na_matriz(batimentos_frames[frame], true);
-}
-
-// Função principal para simular os batimentos
-void simula_batimento() {
-    // Exibe os frames de batimento cardíaco em sequência
-    for (int i = 0; i < 9; i++) {
-        desenha_batimento(i);
-        sleep_ms(300); // Tempo de exibição de cada frame
-    }
-}
-
-
 
 // função principal
 int main() {
@@ -191,9 +244,14 @@ int main() {
   uint sm = pio_claim_unused_sm(pio, true);
   pio_matrix_program_init(pio, sm, offset, OUT_PIN);
 
+  //configuração do buzzer
+  gpio_set_function(BUZZER_PIN, GPIO_FUNC_PWM); // Configura o pino do buzzer para a função PWM
+  uint slice_num = pwm_gpio_to_slice_num(BUZZER_PIN); // Obtém o número do slice PWM associado ao pino
+
   while (true) {
     // Simula os batimentos cardíacos
-    exibe_monitor_cardiaco();
-    simula_batimento();
+    cardiac_rate_matrix();
+    bip_heart_monitor(slice_num, 1000, 50); // Toca um tom de 1000 Hz por 500 ms
+
   }
 }
