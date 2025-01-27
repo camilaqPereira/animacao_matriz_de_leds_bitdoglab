@@ -1,4 +1,4 @@
 [wokwi]
 version = 1
-firmware = 'build/animacao.uf2'
-elf = 'build/animacao.elf'
+firmware = 'build/main.uf2'
+elf = 'build/main.elf'
