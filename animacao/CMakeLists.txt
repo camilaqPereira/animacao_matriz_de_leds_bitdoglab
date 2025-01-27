@@ -28,43 +28,49 @@ set(PICO_BOARD pico_w CACHE STRING "Board type")
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(animacao C CXX ASM)
+project(main C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(animacao animacao.c )
+add_executable(main 
+            main.c
+            hardware_management/buzzer.c
+            hardware_management/keypad.c
+            hardware_management/led_matrix.c
+            animations/vowels.c)
 
-pico_set_program_name(animacao "animacao")
-pico_set_program_version(animacao "0.1")
+pico_set_program_name(main "main")
+pico_set_program_version(main "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(animacao 1)
-pico_enable_stdio_usb(animacao 1)
+pico_enable_stdio_uart(main 1)
+pico_enable_stdio_usb(main 1)
 
-pico_generate_pio_header(animacao ${CMAKE_CURRENT_LIST_DIR}/animacao.pio)
+pico_generate_pio_header(main ${CMAKE_CURRENT_LIST_DIR}/main.pio)
 
-target_sources(animacao PRIVATE animacao.c)
+target_sources(main PRIVATE main.c)
 
 # Add the standard library to the build
-target_link_libraries(animacao
+target_link_libraries(main
         pico_stdlib
         hardware_pio
+        hardware_pwm
 	    hardware_adc
         pico_bootrom
         )
 
 # Add the standard include files to the build
-target_include_directories(animacao PRIVATE
+target_include_directories(main PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
 )
 
 # Add any user requested libraries
-target_link_libraries(animacao 
+target_link_libraries(main 
         
         )
 
-pico_add_extra_outputs(animacao)
+pico_add_extra_outputs(main)
 
