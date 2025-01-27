@@ -1,8 +1,5 @@
-#include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
 
-#include "hardware/adc.h"
 #include "hardware/clocks.h"
 #include "hardware/pio.h"
 #include "pico/bootrom.h"
@@ -12,7 +9,7 @@
 #define BUZZER_PIN 15
 
 // arquivo .pioo
-#include "pio_matrix.pio.h"
+#include "pio_animacao.pio.h"
 
 // número de LEDs
 #define NUM_PIXELS 25
@@ -90,8 +87,8 @@ double frames[FRAMES_SIZE][NUM_PIXELS] = {
 };
 
 
-// função para exibir a sequência de batimentos
-void wave_matrix() {
+// função para exibir as ondas
+void wave_matrix(unit slice_num) {
   while (true) {
     for (int i = 0; i < FRAMES_SIZE; i++) {  // Exibe todos os frames
       drawn_matrix(frames[i]);
