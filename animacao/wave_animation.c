@@ -8,7 +8,7 @@
 
 #define BUZZER_PIN 15
 
-// arquivo .piooo
+// arquivo .pio
 #include "pio_animacao.pio.h"
 
 // número de LEDs
