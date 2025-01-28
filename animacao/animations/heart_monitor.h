@@ -14,7 +14,7 @@
 #define HEART_MONITOR_BIP_DURATION_MS 50
 
 
-extern const const double frames[HEART_MONITOR_FRAMES_SIZE][MTX_NUM_LEDS];
+extern const const double heart_monitor_frames[HEART_MONITOR_FRAMES_SIZE][MTX_NUM_LEDS];
 
 
 

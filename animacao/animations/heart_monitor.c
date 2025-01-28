@@ -5,7 +5,7 @@
 
 /* Definicao de constantes*/
 
-const double frames[HEART_MONITOR_FRAMES_SIZE][MTX_NUM_LEDS] = {
+const double heart_monitor_frames[HEART_MONITOR_FRAMES_SIZE][MTX_NUM_LEDS] = {
 
     // Frame 1
     {0.0, 0.0, 0.0, 0.0, 0.0,  //
@@ -166,7 +166,7 @@ const double frames[HEART_MONITOR_FRAMES_SIZE][MTX_NUM_LEDS] = {
 void cardiac_rate_matrix(PIO pio, uint sm) {
     for (int times = 0; times < 3; times++){
         for (int i = 0; i < HEART_MONITOR_FRAMES_SIZE; i++) {  // Exibe todos os 22 frames
-        heart_monitor_draw_matrix(pio, sm, frames[i]);
+        heart_monitor_draw_matrix(pio, sm, heart_monitor_frames[i]);
         sleep_ms(150);  // Intervalo entre os frames
         }
         buzzer_play(1, 1000, 50);
