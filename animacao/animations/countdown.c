@@ -1,6 +1,6 @@
 #include "countdown.h"
 
-double desenhos[4][NUM_PIXELS] = {
+double desenhos[4][MTX_NUM_LEDS] = {
     {
         // mini 0
         0.0, 0.0, 0.0, 0.0, 0.0,  //
@@ -35,57 +35,49 @@ double desenhos[4][NUM_PIXELS] = {
     },
 };
 
-int desenhos_ordem[12][NUM_PIXELS] = {
+int desenhos_ordem[12][MTX_NUM_LEDS] = {
     // numero 0
-    {LED5, LED4, LED3, LED2, LED1, LED6, LED11, LED16, LED21, LED22, LED23,
-     LED24, LED25, LED20, LED15, LED10},
+    {COUNTDOWN_LED5, COUNTDOWN_LED4, COUNTDOWN_LED3, COUNTDOWN_LED2, COUNTDOWN_LED1, COUNTDOWN_LED6, COUNTDOWN_LED11, COUNTDOWN_LED16, COUNTDOWN_LED21, COUNTDOWN_LED22, COUNTDOWN_LED23,
+     COUNTDOWN_LED24, COUNTDOWN_LED25, COUNTDOWN_LED20, COUNTDOWN_LED15, COUNTDOWN_LED10},
 
     // numero 1
-    {LED7, LED3, LED8, LED13, LED18, LED23, LED22, LED21, LED24, LED25},
+    {COUNTDOWN_LED7, COUNTDOWN_LED3, COUNTDOWN_LED8, COUNTDOWN_LED13, COUNTDOWN_LED18, COUNTDOWN_LED23, COUNTDOWN_LED22, COUNTDOWN_LED21, COUNTDOWN_LED24, COUNTDOWN_LED25},
 
     // numero 2
-    {LED1, LED2, LED3, LED4, LED5, LED10, LED15, LED14, LED13, LED12, LED11,
-     LED16, LED21, LED22, LED23, LED24, LED25},
+    {COUNTDOWN_LED1, COUNTDOWN_LED2, COUNTDOWN_LED3, COUNTDOWN_LED4, COUNTDOWN_LED5, COUNTDOWN_LED10, COUNTDOWN_LED15, COUNTDOWN_LED14, COUNTDOWN_LED13, COUNTDOWN_LED12, COUNTDOWN_LED11,
+     COUNTDOWN_LED16, COUNTDOWN_LED21, COUNTDOWN_LED22, COUNTDOWN_LED23, COUNTDOWN_LED24, COUNTDOWN_LED25},
 
     // numero 3
-    {LED1, LED2, LED3, LED4, LED5, LED10, LED15, LED14, LED13, LED12, LED11,
-     LED20, LED25, LED24, LED23, LED23, LED22, LED21},
+    {COUNTDOWN_LED1, COUNTDOWN_LED2, COUNTDOWN_LED3, COUNTDOWN_LED4, COUNTDOWN_LED5, COUNTDOWN_LED10, COUNTDOWN_LED15, COUNTDOWN_LED14, COUNTDOWN_LED13, COUNTDOWN_LED12, COUNTDOWN_LED11,
+     COUNTDOWN_LED20, COUNTDOWN_LED25, COUNTDOWN_LED24, COUNTDOWN_LED23, COUNTDOWN_LED23, COUNTDOWN_LED22, COUNTDOWN_LED21},
 
     // numero 4
-    {LED1, LED6, LED11, LED12, LED13, LED14, LED15, LED10, LED5, LED20, LED25},
+    {COUNTDOWN_LED1, COUNTDOWN_LED6, COUNTDOWN_LED11, COUNTDOWN_LED12, COUNTDOWN_LED13, COUNTDOWN_LED14, COUNTDOWN_LED15, COUNTDOWN_LED10, COUNTDOWN_LED5, COUNTDOWN_LED20, COUNTDOWN_LED25},
 
     // numero 5
-    {LED5, LED4, LED3, LED2, LED1, LED6, LED11, LED12, LED13, LED14, LED15,
-     LED20, LED25, LED24, LED23, LED22, LED21},
+    {COUNTDOWN_LED5, COUNTDOWN_LED4, COUNTDOWN_LED3, COUNTDOWN_LED2, COUNTDOWN_LED1, COUNTDOWN_LED6, COUNTDOWN_LED11, COUNTDOWN_LED12, COUNTDOWN_LED13, COUNTDOWN_LED14, COUNTDOWN_LED15,
+     COUNTDOWN_LED20, COUNTDOWN_LED25, COUNTDOWN_LED24, COUNTDOWN_LED23, COUNTDOWN_LED22, COUNTDOWN_LED21},
 
     // numero 6
-    {LED5, LED4, LED3, LED2, LED1, LED6, LED11, LED16, LED21, LED22, LED23,
-     LED24, LED25, LED20, LED15, LED14, LED13, LED12},
+    {COUNTDOWN_LED5, COUNTDOWN_LED4, COUNTDOWN_LED3, COUNTDOWN_LED2, COUNTDOWN_LED1, COUNTDOWN_LED6, COUNTDOWN_LED11, COUNTDOWN_LED16, COUNTDOWN_LED21, COUNTDOWN_LED22, COUNTDOWN_LED23,
+     COUNTDOWN_LED24, COUNTDOWN_LED25, COUNTDOWN_LED20, COUNTDOWN_LED15, COUNTDOWN_LED14, COUNTDOWN_LED13, COUNTDOWN_LED12},
 
     // numero 7
-    {LED1, LED2, LED3, LED4, LED5, LED10, LED15, LED20, LED25},
+    {COUNTDOWN_LED1, COUNTDOWN_LED2, COUNTDOWN_LED3, COUNTDOWN_LED4, COUNTDOWN_LED5, COUNTDOWN_LED10, COUNTDOWN_LED15, COUNTDOWN_LED20, COUNTDOWN_LED25},
 
     // numero 8
-    {LED5, LED4, LED3, LED2, LED1, LED6, LED11, LED12, LED13, LED14, LED15,
-     LED20, LED25, LED24, LED23, LED22, LED21, LED16, LED10},
+    {COUNTDOWN_LED5, COUNTDOWN_LED4, COUNTDOWN_LED3, COUNTDOWN_LED2, COUNTDOWN_LED1, COUNTDOWN_LED6, COUNTDOWN_LED11, COUNTDOWN_LED12, COUNTDOWN_LED13, COUNTDOWN_LED14, COUNTDOWN_LED15,
+     COUNTDOWN_LED20, COUNTDOWN_LED25, COUNTDOWN_LED24, COUNTDOWN_LED23, COUNTDOWN_LED22, COUNTDOWN_LED21, COUNTDOWN_LED16, COUNTDOWN_LED10},
 
     // numero 9
-    {LED5, LED4, LED3, LED2, LED1, LED6, LED11, LED12, LED13, LED14, LED15,
-     LED10, LED20, LED25, LED24, LED23, LED22, LED21}};
+    {COUNTDOWN_LED5, COUNTDOWN_LED4, COUNTDOWN_LED3, COUNTDOWN_LED2, COUNTDOWN_LED1, COUNTDOWN_LED6, COUNTDOWN_LED11, COUNTDOWN_LED12, COUNTDOWN_LED13, COUNTDOWN_LED14, COUNTDOWN_LED15,
+     COUNTDOWN_LED10, COUNTDOWN_LED20, COUNTDOWN_LED25, COUNTDOWN_LED24, COUNTDOWN_LED23, COUNTDOWN_LED22, COUNTDOWN_LED21}};
 
-// rotina para definição da intensidade de cores do led
-uint32_t matrix_rgb(double b, double r, double g) {
-  unsigned char R, G, B;
-  R = r * 255;
-  G = g * 255;
-  B = b * 255;
-  return (G << 24) | (R << 16) | (B << 8);
-}
 
 // rotina para acionar a matrix de leds - ws2812b
-void draw_matrix(PIO pio, uint sm, double* desenho, bool colorido) {
+void countdown_draw_matrix(PIO pio, uint sm, double* desenho, bool colorido) {
   uint32_t valor_led;
-  for (int16_t i = 0; i < NUM_PIXELS; i++) {
+  for (int16_t i = 0; i < MTX_NUM_LEDS; i++) {
     int index = 24 - i;
     double pixel = desenho[index];
 
@@ -115,36 +107,37 @@ void make_numbers(PIO pio, uint sm, int numero) {
     int posicao = posicoes[i];
     if (posicao > 0 && posicao <= 25) {
       desenho[posicao - 1] = 0.3;
-      draw_matrix(pio, sm, desenho, false);
-      sleep_ms(NUMBERS_SLEEP);
+      countdown_draw_matrix(pio, sm, desenho, false);
+      sleep_ms(COUNTDOWN_NUMBERS_SLEEP);
     }
   }
 
-  sleep_ms(ANIMATIONS_SLEEP);
+  sleep_ms(COUNTDOWN_ANIMATIONS_SLEEP);
 }
 
 void make_circles(PIO pio, uint sm) {
-  desenha_na_matriz(pio, sm, desenhos[0], false);
-  sleep_ms(ANIMATIONS_SLEEP);
+  countdown_draw_matrix(pio, sm, desenhos[0], false);
+  sleep_ms(COUNTDOWN_ANIMATIONS_SLEEP);
 
-  desenha_na_matriz(pio, sm, desenhos[1], false);
-  sleep_ms(ANIMATIONS_SLEEP);
+  countdown_draw_matrix(pio, sm, desenhos[1], false);
+  sleep_ms(COUNTDOWN_ANIMATIONS_SLEEP);
 }
 
 void make_firework(PIO pio, uint sm) {
-  desenha_na_matriz(pio, sm, desenhos[2], true);
-  sleep_ms(ANIMATIONS_SLEEP);
+  countdown_draw_matrix(pio, sm, desenhos[2], true);
+  sleep_ms(COUNTDOWN_ANIMATIONS_SLEEP);
 
-  desenha_na_matriz(pio, sm, desenhos[3], true);
-  sleep_ms(ANIMATIONS_SLEEP);
+  countdown_draw_matrix(pio, sm, desenhos[3], true);
+  sleep_ms(COUNTDOWN_ANIMATIONS_SLEEP);
+  buzzer_play(3, 1000, 250);
 }
 
 void countdown_animation(PIO pio, uint sm) {
-  while (true) {
-    for (int i = 9; i >= 0; i--) {
-      make_numbers(pio, sm, i);
-    }
-    make_circles(pio, sm);
-    make_firework(pio, sm);
+  
+  for (int i = 9; i >= 0; i--) {
+    make_numbers(pio, sm, i);
   }
+  make_circles(pio, sm);
+  make_firework(pio, sm);
+  
 }

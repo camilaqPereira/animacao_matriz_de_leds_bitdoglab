@@ -1,5 +1,6 @@
-#ifndef COUNTDOWN
-#define COUNTDOWN
+#ifndef COUNTDOWN_H
+#define COUNTDOWN_H
+
 
 #include <math.h>
 #include <stdio.h>
@@ -12,39 +13,35 @@
 #include "pico/stdlib.h"
 
 /* Definicao de constantes*/
-#define LED1 1
-#define LED2 2
-#define LED3 3
-#define LED4 4
-#define LED5 5
-#define LED6 10
-#define LED7 9
-#define LED8 8
-#define LED9 7
-#define LED10 6
-#define LED11 11
-#define LED12 12
-#define LED13 13
-#define LED14 14
-#define LED15 15
-#define LED16 20
-#define LED17 19
-#define LED18 18
-#define LED19 17
-#define LED20 16
-#define LED21 21
-#define LED22 22
-#define LED23 23
-#define LED24 24
-#define LED25 25
+#define COUNTDOWN_LED1 1
+#define COUNTDOWN_LED2 2
+#define COUNTDOWN_LED3 3
+#define COUNTDOWN_LED4 4
+#define COUNTDOWN_LED5 5
+#define COUNTDOWN_LED6 10
+#define COUNTDOWN_LED7 9
+#define COUNTDOWN_LED8 8
+#define COUNTDOWN_LED9 7
+#define COUNTDOWN_LED10 6
+#define COUNTDOWN_LED11 11
+#define COUNTDOWN_LED12 12
+#define COUNTDOWN_LED13 13
+#define COUNTDOWN_LED14 14
+#define COUNTDOWN_LED15 15
+#define COUNTDOWN_LED16 20
+#define COUNTDOWN_LED17 19
+#define COUNTDOWN_LED18 18
+#define COUNTDOWN_LED19 17
+#define COUNTDOWN_LED20 16
+#define COUNTDOWN_LED21 21
+#define COUNTDOWN_LED22 22
+#define COUNTDOWN_LED23 23
+#define COUNTDOWN_LED24 24
+#define COUNTDOWN_LED25 25
 
-// número de LEDs
-#define NUM_PIXELS 25
-// pino de saída
-#define OUT_PIN 7
 // tempo de espera entre as animacoes
-#define ANIMATIONS_SLEEP 200
-#define NUMBERS_SLEEP 40
+#define COUNTDOWN_ANIMATIONS_SLEEP 200
+#define COUNTDOWN_NUMBERS_SLEEP 40
 
 void countdown_animation(PIO pio, uint sm);
 
