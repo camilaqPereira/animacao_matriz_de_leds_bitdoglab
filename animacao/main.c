@@ -1,4 +1,3 @@
-
 #include "main.h"
 
 
@@ -56,6 +55,8 @@ int main()
     /* Configurando interrupcao para o pushbutton A*/
     gpio_set_irq_enabled_with_callback(GPIO_BUTTON_A, GPIO_IRQ_EDGE_FALL, 1, &handle_button_a_press);
 
+    matrix_turn_all(pio, state_machine, LED_OFF, LED_OFF, LED_OFF);
+
     while (true) {
         keypad_get_pressed_key(&pressed_key);
         //scanf("%c", &pressed_key); //PARA TESTE COM MONITOR SERIAL
@@ -67,17 +68,23 @@ int main()
             break;
         case '1':
             cardiac_rate_matrix(pio, state_machine);
+            matrix_turn_all(pio, state_machine, LED_OFF, LED_OFF, LED_OFF);
             break;
         case '2':
             vowels_animation(pio, state_machine);
+            matrix_turn_all(pio, state_machine, LED_OFF, LED_OFF, LED_OFF);
             break;
         case '3':
             wave_animation(pio, state_machine);
+            matrix_turn_all(pio, state_machine, LED_OFF, LED_OFF, LED_OFF);
             break;
         case '4':
             countdown_animation(pio, state_machine);
+            matrix_turn_all(pio, state_machine, LED_OFF, LED_OFF, LED_OFF);
             break;
         case '5':
+            snake_animation(pio, state_machine);
+            matrix_turn_all(pio, state_machine, LED_OFF, LED_OFF, LED_OFF);
             break;
         case 'A':
             matrix_turn_all(pio, state_machine, LED_OFF, LED_OFF, LED_OFF);
@@ -102,5 +109,6 @@ int main()
         }
 
         sleep_ms(200);
+       
     }
 }

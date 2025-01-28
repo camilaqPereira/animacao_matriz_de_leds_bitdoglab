@@ -21,6 +21,7 @@
 #include "animations/heart_monitor.h"
 #include "animations/wave.h"
 #include "animations/countdown.h"
+#include "animations/snake.h"
 
 #include "main.pio.h"
 
