@@ -42,22 +42,22 @@ const int letter_frames[5][25] = {
 
 // Função para acender LEDs gradualmente para formar uma letra
 void vowels_render_letter(const int *letter, PIO pio, uint sm) {
-  uint32_t frame[NUM_LEDS] = {0}; // Estado atual dos LEDs
+  uint32_t frame[MTX_NUM_LEDS] = {0}; // Estado atual dos LEDs
 
-  for (int i = 0; i < NUM_LEDS; i++) {
+  for (int i = 0; i < MTX_NUM_LEDS; i++) {
       if (letter[i]) {
           frame[i] = matrix_rgb(0.5, 0.0, 0.0); // Define o LED atual como azul
       }
 
       // Envia o estado atualizado para todos os LEDs
-      for (int j = 0; j < NUM_LEDS; j++) {
+      for (int j = 0; j < MTX_NUM_LEDS; j++) {
           pio_sm_put_blocking(pio, sm, frame[24 - j]);
       }
-      sleep_ms(100); // Atraso para acender LED por LED
+      sleep_ms(33); // Atraso para acender LED por LED
   }
 
   // Garante que a letra inteira permaneça visível após acender todos os LEDs
-  for (int j = 0; j < NUM_LEDS; j++) {
+  for (int j = 0; j < MTX_NUM_LEDS; j++) {
       pio_sm_put_blocking(pio, sm, frame[24 - j]);
   }
   sleep_ms(500); // Pausa após completar a letra
