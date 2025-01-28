@@ -16,4 +16,7 @@ extern const uint GPIO_LED_MTX; // GPIO da matriz de leds
 */
 uint32_t matrix_rgb(double b, double r, double g);
 
+
+void matrix_turn_off_all(PIO pio, uint state_machine);
+
 #endif

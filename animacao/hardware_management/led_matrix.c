@@ -13,5 +13,11 @@ uint32_t matrix_rgb(double b, double r, double g) {
 
 
 
+void matrix_turn_off_all(PIO pio, uint state_machine){
+    for (int i = 0; i < MTX_NUM_LEDS; i++){
+        pio_sm_put_blocking(pio, state_machine, 0);
+    }
+}
+
 
 
