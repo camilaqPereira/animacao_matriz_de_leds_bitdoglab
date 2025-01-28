@@ -3,8 +3,10 @@
 
 
 #include "pico/stdlib.h"
+#include "hardware/pio.h"
 
-#define NUM_LEDS 25 //Total de leds na matriz
+#define MTX_NUM_LEDS 25 //Total de leds na matriz
+#define MTX_NUM_ROWS 5 //Numero de linhas na matriz
 
 extern const uint GPIO_LED_MTX; // GPIO da matriz de leds
 
