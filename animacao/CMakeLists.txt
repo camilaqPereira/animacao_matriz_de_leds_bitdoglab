@@ -43,7 +43,8 @@ add_executable(main
             animations/vowels.c
             animations/scroll_display.c
             animations/heart_monitor.c
-            animations/wave.c)
+            animations/wave.c
+            animations/countdown.c)
 
 pico_set_program_name(main "main")
 pico_set_program_version(main "0.1")
