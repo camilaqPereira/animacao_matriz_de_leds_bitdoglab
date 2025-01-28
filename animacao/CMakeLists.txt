@@ -41,7 +41,8 @@ add_executable(main
             hardware_management/keypad.c
             hardware_management/led_matrix.c
             animations/vowels.c
-            ANIMATIONS/scroll_display.c)
+            animations/scroll_display.c
+            animations/heart_monitor.c)
 
 pico_set_program_name(main "main")
 pico_set_program_version(main "0.1")
