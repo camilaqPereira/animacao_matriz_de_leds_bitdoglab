@@ -16,7 +16,7 @@ extern const double wave_frames[WAVE_FRAMES_SIZE][MTX_NUM_LEDS];
 
 void wave_animation(PIO pio, uint sm);
 
-void draw_matrix(PIO pio, uint sm, const double* desenho, int frame_index);
+void wave_draw_matrix(PIO pio, uint sm, const double* desenho, int frame_index);
 
 
 

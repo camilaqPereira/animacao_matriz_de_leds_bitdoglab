@@ -106,12 +106,12 @@ void wave_animation(PIO pio, uint sm) {
   for (int i = 0; i < WAVE_FRAMES_SIZE; i++) {  // Exibe todos os frames
     if (i == 0) buzzer_play(1, 1000, 500);
 
-    draw_matrix(pio, sm, wave_frames[i], i);
+    wave_draw_matrix(pio, sm, wave_frames[i], i);
     sleep_ms(100);  // Intervalo entre os frames   
   }
 }
 
-void draw_matrix(PIO pio, uint sm, const double* desenho, int frame_index) {
+void wave_draw_matrix(PIO pio, uint sm, const double* desenho, int frame_index) {
   uint32_t valor_led;
   
   for (int16_t i = 0; i < MTX_NUM_LEDS; i++) {
