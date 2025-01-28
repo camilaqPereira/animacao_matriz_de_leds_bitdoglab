@@ -2,9 +2,9 @@
 
 /* Definicao de constantes*/
 
-const uint rows_pins[NUM_ROWS] = {17, 16, 18, 19};
-const uint columns_pins[NUM_COLUMNS] = {20, 4, 9, 8};
-const char keypad_mapping[NUM_ROWS][NUM_COLUMNS] = {
+const uint rows_pins[KEYPAD_NUM_ROWS] = {17, 16, 18, 19};
+const uint columns_pins[KEYPAD_NUM_COLUMNS] = {20, 4, 9, 8};
+const char keypad_mapping[KEYPAD_NUM_ROWS][KEYPAD_NUM_COLUMNS] = {
     {'1', '2', '3', 'A'},
     {'4', '5', '6', 'B'},
     {'7', '8', '9', 'C'},

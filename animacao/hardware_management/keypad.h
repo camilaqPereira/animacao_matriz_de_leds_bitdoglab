@@ -6,14 +6,14 @@
 /* Definicao de constantes*/
 
 
-#define NUM_ROWS 4
-#define NUM_COLUMNS 4
+#define KEYPAD_NUM_ROWS 4
+#define KEYPAD_NUM_COLUMNS 4
 
-extern const uint rows_pins[NUM_ROWS];
-extern const uint columns_pins[NUM_COLUMNS];
+extern const uint rows_pins[KEYPAD_NUM_ROWS];
+extern const uint columns_pins[KEYPAD_NUM_COLUMNS];
 
 /* Mapeamento do teclado matricial*/
-extern const char keypad_mapping[NUM_ROWS][NUM_COLUMNS];
+extern const char keypad_mapping[KEYPAD_NUM_ROWS][KEYPAD_NUM_COLUMNS];
 
 
 
