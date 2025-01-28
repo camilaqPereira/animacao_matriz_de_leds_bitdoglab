@@ -101,6 +101,6 @@ int main()
             break;
         }
 
-        //sleep_ms(200);
+        sleep_ms(200);
     }
 }
