@@ -6,7 +6,9 @@
 
 O vídeo a seguir apresenta uma expplicação breve sobre o projeto.
 
+> [Sobre o projeto - Youtube](https://youtu.be/K9iVSn9B6GE)
 
+[Bônus Funcionamento na BitDogLab via comunicação serial - Youtube](https://youtu.be/nYVzXFa64-s)
 
 ## Colaboradores
 
